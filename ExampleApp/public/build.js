@@ -82,25 +82,29 @@
 
 	var _trackingList2 = _interopRequireDefault(_trackingList);
 
-	__webpack_require__(515);
+	__webpack_require__(516);
 
-	__webpack_require__(517);
+	__webpack_require__(518);
 
 	var _Tracking = __webpack_require__(500);
 
 	var _Tracking2 = _interopRequireDefault(_Tracking);
 
-	var _Agency = __webpack_require__(519);
+	var _Agency = __webpack_require__(520);
 
 	var _Agency2 = _interopRequireDefault(_Agency);
 
-	var _clientTracking = __webpack_require__(520);
+	var _clientTracking = __webpack_require__(521);
 
 	var _clientTracking2 = _interopRequireDefault(_clientTracking);
 
-	var _login = __webpack_require__(521);
+	var _login = __webpack_require__(522);
 
 	var _login2 = _interopRequireDefault(_login);
+
+	var _messages = __webpack_require__(525);
+
+	var _messages2 = _interopRequireDefault(_messages);
 
 	var _firebase = __webpack_require__(501);
 
@@ -220,7 +224,8 @@
 	        _react2.default.createElement(_reactRouter.Route, { path: 'trackingList', component: _trackingList2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: 'newTracking', component: _newTracking2.default }),
 	        _react2.default.createElement(_reactRouter.Route, { path: 'agency', component: _Agency2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'clientTracking', component: _clientTracking2.default })
+	        _react2.default.createElement(_reactRouter.Route, { path: 'clientTracking', component: _clientTracking2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: 'messagesList', component: _messages2.default })
 	    )
 	), document.getElementById('container'));
 
@@ -46560,6 +46565,15 @@
 	                  null,
 	                  _react2.default.createElement(
 	                    _reactRouter.Link,
+	                    { to: 'messagesList' },
+	                    'Mensajes'
+	                  )
+	                ),
+	                _react2.default.createElement(
+	                  'li',
+	                  null,
+	                  _react2.default.createElement(
+	                    _reactRouter.Link,
 	                    { to: 'trackingList' },
 	                    'Env\xEDos'
 	                  )
@@ -46794,7 +46808,8 @@
 	            trackingNumber: '',
 	            date: new Date().toISOString().slice(0, 10),
 	            agencies: _this.props.agencies,
-	            agencySelected: ''
+	            agencySelected: '',
+	            couponId: '0'
 	        };
 
 	        _this.handleAgencyChange = _this.handleAgencyChange.bind(_this);
@@ -46802,6 +46817,7 @@
 	        _this.handleTrackingNumberChange = _this.handleTrackingNumberChange.bind(_this);
 	        _this.handleDateChange = _this.handleDateChange.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.handleCouponChange = _this.handleCouponChange.bind(_this);
 	        return _this;
 	    }
 
@@ -46832,6 +46848,20 @@
 	        value: function handleDateChange(event) {
 	            this.setState({ date: event.target.value });
 	        }
+
+	        //For the moment we only manage one type of coupon. Later can be upgraded to manage many coupons with id.
+
+	    }, {
+	        key: 'handleCouponChange',
+	        value: function handleCouponChange(event) {
+	            console.log(event.target.checked);
+	            if (event.target.checked) {
+	                this.setState({ couponId: '1' });
+	            } else {
+	                this.setState({ couponId: '0' });
+	            }
+	            console.log(this.state.couponId);
+	        }
 	    }, {
 	        key: 'handleSubmit',
 	        value: function handleSubmit(event) {
@@ -46840,15 +46870,29 @@
 	            var ag = this.state.agencySelected;
 	            ag = ag === '' ? this.state.agencies[0] : ag;
 
-	            var tracking = {
-	                name: this.state.name,
-	                trackingNumber: this.state.trackingNumber,
-	                date: this.state.date,
-	                agency: ag
-	            };
-
-	            //returning data
-	            this.props.handleTracking(tracking);
+	            if (this.verifyInputs()) {
+	                var tracking = {
+	                    name: this.state.name,
+	                    trackingNumber: this.state.trackingNumber,
+	                    date: this.state.date,
+	                    agency: ag,
+	                    couponId: this.state.couponId
+	                };
+	                //returning data
+	                this.props.handleTracking(tracking);
+	                _reactRouter.hashHistory.push('trackingList/');
+	            } else {
+	                alert('Completar todos los campos');
+	            }
+	        }
+	    }, {
+	        key: 'verifyInputs',
+	        value: function verifyInputs() {
+	            if (this.state.name !== '' && this.state.trackingNumber !== '') {
+	                return true;
+	            } else {
+	                return false;
+	            }
 	        }
 	    }, {
 	        key: 'render',
@@ -46898,6 +46942,21 @@
 	                            'Agencia'
 	                        ),
 	                        _react2.default.createElement(SelectOptions, { id: 'selectAgency', options: this.state.agencies, defaultq: this.state.agencies[0], selectedOpt: this.handleAgencyChange })
+	                    ),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'checkboxCoupon' },
+	                            'Agregar Cup\xF3n:'
+	                        ),
+	                        _react2.default.createElement(
+	                            'label',
+	                            { className: 'toggle', style: { float: "right" } },
+	                            _react2.default.createElement('input', { type: 'checkbox', id: 'checkboxCoupon', value: this.state.couponId, onChange: this.handleCouponChange }),
+	                            _react2.default.createElement('span', { className: 'handle' })
+	                        )
 	                    ),
 	                    _react2.default.createElement(
 	                        _reactBootstrap.Modal.Footer,
@@ -47666,7 +47725,11 @@
 
 	var config = _interopRequireWildcard(_config);
 
-	var _reactCopyToClipboard = __webpack_require__(511);
+	var _firebaseTest = __webpack_require__(511);
+
+	var databaseFactory = _interopRequireWildcard(_firebaseTest);
+
+	var _reactCopyToClipboard = __webpack_require__(512);
 
 	var _reactCopyToClipboard2 = _interopRequireDefault(_reactCopyToClipboard);
 
@@ -47720,7 +47783,7 @@
 	                var result = Object.keys(snap.val()).map(function (k) {
 	                    return snap.val()[k];
 	                });
-	                console.log(result);
+	                result.reverse();
 	                _this2.setState({ trackings: result });
 	            });
 	        }
@@ -47740,15 +47803,21 @@
 	            var rootRef = firebase.database().ref().child('trackings').orderByKey();
 	            rootRef.off();
 	        }
-
-	        //Must be corrected. Now is case sensitve.
-
 	    }, {
 	        key: 'searchTrackings',
 	        value: function searchTrackings(query) {
 	            var searchResult = [];
+	            var agency = '';
+	            var name = '';
+	            var trackingNumber = '';
+	            var queryFilter = query.toLowerCase();
+
 	            this.state.trackings.map(function (t) {
-	                if (t.agency.indexOf(query) > -1 || t.name.indexOf(query) > -1 || t.trackingNumber.indexOf(query) > -1) {
+	                agency = t.agency.toLowerCase();
+	                name = t.name.toLowerCase();
+	                trackingNumber = t.trackingNumber.toLowerCase();
+
+	                if (agency.indexOf(queryFilter) > -1 || name.indexOf(queryFilter) > -1 || trackingNumber.indexOf(queryFilter) > -1) {
 	                    searchResult.push(t);
 	                }
 	            });
@@ -48059,7 +48128,55 @@
 
 	'use strict';
 
-	var _require = __webpack_require__(512);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.getChild = undefined;
+	exports.get1 = get1;
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _firebase = __webpack_require__(501);
+
+	var firebase = _interopRequireWildcard(_firebase);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function get1(key) {
+	    var rootRef = firebase.database().ref().child(key).orderByKey();
+	    var result = '';
+	    rootRef.on('value', function (snap) {
+	        result = Object.keys(snap.val()).map(function (k) {
+	            return snap.val()[k];
+	        });
+	        //console.log(result);
+	        return result;
+	    });
+	}
+
+	var getChild = exports.getChild = function getChild(key) {
+	    var rootRef = firebase.database().ref().child(key).orderByKey();
+	    var result = '';
+	    rootRef.on('value', function (snap) {
+	        result = Object.keys(snap.val()).map(function (k) {
+	            return snap.val()[k];
+	        });
+	        //console.log(result);
+	        return result;
+	    });
+	};
+
+/***/ },
+/* 512 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _require = __webpack_require__(513);
 
 	var CopyToClipboard = _require.CopyToClipboard;
 
@@ -48068,7 +48185,7 @@
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 512 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48084,7 +48201,7 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _copyToClipboard = __webpack_require__(513);
+	var _copyToClipboard = __webpack_require__(514);
 
 	var _copyToClipboard2 = _interopRequireDefault(_copyToClipboard);
 
@@ -48141,12 +48258,12 @@
 	//# sourceMappingURL=Component.js.map
 
 /***/ },
-/* 513 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var deselectCurrent = __webpack_require__(514);
+	var deselectCurrent = __webpack_require__(515);
 
 	var defaultMessage = 'Copy to clipboard: #{key}, Enter';
 
@@ -48227,7 +48344,7 @@
 
 
 /***/ },
-/* 514 */
+/* 515 */
 /***/ function(module, exports) {
 
 	
@@ -48272,7 +48389,7 @@
 
 
 /***/ },
-/* 515 */
+/* 516 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48280,7 +48397,7 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(516);
+	var content = __webpack_require__(517);
 	if (typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(244)(content, {});
@@ -48302,7 +48419,7 @@
 	}
 
 /***/ },
-/* 516 */
+/* 517 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(243)();
@@ -48316,7 +48433,7 @@
 
 
 /***/ },
-/* 517 */
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48324,7 +48441,7 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(518);
+	var content = __webpack_require__(519);
 	if (typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(244)(content, {});
@@ -48346,7 +48463,7 @@
 	}
 
 /***/ },
-/* 518 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(243)();
@@ -48360,7 +48477,7 @@
 
 
 /***/ },
-/* 519 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48411,8 +48528,8 @@
 	        _this.handleDelete = _this.handleDelete.bind(_this);
 
 	        //var id = this.getURLParameter("id");
-	        console.log(_this.props);
-	        console.log(_this.props.location.query.id);
+	        //console.log(this.props);
+	        //console.log(this.props.location.query.id);
 
 	        return _this;
 	    }
@@ -48451,9 +48568,14 @@
 	        key: 'handleSubmit',
 	        value: function handleSubmit(event) {
 	            event.preventDefault();
-	            firebase.database().ref('agencies').push({
-	                'name': this.state.newAgency
-	            });
+	            if (this.verifyInputs()) {
+	                firebase.database().ref('agencies').push({
+	                    'name': this.state.newAgency
+	                });
+	                this.clearInputs();
+	            } else {
+	                alert('Completar los datos');
+	            }
 	        }
 	    }, {
 	        key: 'handleDelete',
@@ -48470,6 +48592,20 @@
 	        value: function removeDatabaseReference() {
 	            var rootRef = firebase.database().ref().child('agencies').orderByKey();
 	            rootRef.off();
+	        }
+	    }, {
+	        key: 'verifyInputs',
+	        value: function verifyInputs() {
+	            if (this.state.newAgency !== '') {
+	                return true;
+	            } else {
+	                return false;
+	            }
+	        }
+	    }, {
+	        key: 'clearInputs',
+	        value: function clearInputs() {
+	            this.setState({ newAgency: '' });
 	        }
 	    }, {
 	        key: 'render',
@@ -48535,7 +48671,7 @@
 	exports.default = Agency;
 
 /***/ },
-/* 520 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48589,37 +48725,38 @@
 	    }
 
 	    _createClass(ClientTracking, [{
-	        key: 'componentWillMount',
-	        value: function componentWillMount() {
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
 	            this.loadTracking();
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this.removeDatabaseReference();
+	            console.log("unmounted");
+	        }
+	    }, {
+	        key: 'removeDatabaseReference',
+	        value: function removeDatabaseReference() {
+	            var urlId = this.props.location.query.id;
+	            var rootRef = firebase.database().ref().child('trackings').equalTo(urlId);
+	            rootRef.off();
 	        }
 	    }, {
 	        key: 'loadTracking',
 	        value: function loadTracking() {
-	            var _this2 = this;
-
 	            var urlId = this.props.location.query.id;
-	            var url = config.apiClientQuery + '%22' + urlId + '%22';
-	            fetch(url).then(function (response) {
-	                return response.json();
-	            }).then(function (data) {
-	                var result = Object.keys(data).map(function (k) {
-	                    return data[k];
-	                });
-	                //this.setState({ trackings : arr}, function(){console.log(this.state.trackings);});
-	                _this2.setState({
-	                    trackingNumber: result[0].trackingNumber,
-	                    name: result[0].name,
-	                    date: result[0].date,
-	                    agency: result[0].agency
-	                });
+	            var trackingloaded = '';
 
-	                console.log(result);
-	                //console.log(this.state.name);
-
-	            }).catch(function (error) {
-	                console.error(error);
-	            });
+	            var rootRef = firebase.database().ref().child('trackings').orderByChild("trackingNumber").equalTo(urlId).on("child_added", function (snapshot) {
+	                trackingloaded = snapshot.val();
+	                this.setState({
+	                    trackingNumber: trackingloaded.trackingNumber,
+	                    name: trackingloaded.name,
+	                    date: trackingloaded.date,
+	                    agency: trackingloaded.agency
+	                });
+	            }, this);
 	        }
 	    }, {
 	        key: 'render',
@@ -48676,7 +48813,7 @@
 	                            ),
 	                            _react2.default.createElement(
 	                                'span',
-	                                { className: 'btn btn-success' },
+	                                { className: 'btn btn-success', style: { marginLeft: "10px" } },
 	                                'Enviado'
 	                            )
 	                        ),
@@ -48711,7 +48848,7 @@
 	exports.default = ClientTracking;
 
 /***/ },
-/* 521 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48728,7 +48865,7 @@
 
 	var _reactRouter = __webpack_require__(183);
 
-	__webpack_require__(522);
+	__webpack_require__(523);
 
 	var _firebase = __webpack_require__(501);
 
@@ -48837,7 +48974,7 @@
 	exports.default = Login;
 
 /***/ },
-/* 522 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -48845,7 +48982,7 @@
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(523);
+	var content = __webpack_require__(524);
 	if (typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(244)(content, {});
@@ -48867,7 +49004,7 @@
 	}
 
 /***/ },
-/* 523 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(243)();
@@ -48879,6 +49016,302 @@
 
 	// exports
 
+
+/***/ },
+/* 525 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRouter = __webpack_require__(183);
+
+	var _firebase = __webpack_require__(501);
+
+	var firebase = _interopRequireWildcard(_firebase);
+
+	var _config = __webpack_require__(510);
+
+	var config = _interopRequireWildcard(_config);
+
+	var _reactBootstrap = __webpack_require__(246);
+
+	var _reactCopyToClipboard = __webpack_require__(512);
+
+	var _reactCopyToClipboard2 = _interopRequireDefault(_reactCopyToClipboard);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Messages = function (_React$Component) {
+	    _inherits(Messages, _React$Component);
+
+	    function Messages(props) {
+	        _classCallCheck(this, Messages);
+
+	        var _this = _possibleConstructorReturn(this, (Messages.__proto__ || Object.getPrototypeOf(Messages)).call(this, props));
+
+	        _this.state = {
+	            messagesList: [],
+	            newMessage: '',
+	            newTitle: '',
+
+	            showModal: false,
+	            selectedMessage: ''
+	        };
+
+	        _this.handleTitle = _this.handleTitle.bind(_this);
+	        _this.handleMessage = _this.handleMessage.bind(_this);
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.handleDelete = _this.handleDelete.bind(_this);
+
+	        return _this;
+	    }
+
+	    _createClass(Messages, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            this.loadMessages();
+	        }
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this.removeDatabaseReference();
+	        }
+	    }, {
+	        key: 'closeModal',
+	        value: function closeModal() {
+	            this.setState({ showModal: false });
+	        }
+
+	        //Open the modal and save the selected message.
+
+	    }, {
+	        key: 'openModal',
+	        value: function openModal(item, e) {
+	            this.setState({
+	                showModal: true,
+	                selectedMessage: item
+	            });
+	            //console.log(this.state.selectedMessage);
+	        }
+	    }, {
+	        key: 'loadMessages',
+	        value: function loadMessages() {
+	            var _this2 = this;
+
+	            var rootRef = firebase.database().ref().child('messages').orderByKey();
+	            rootRef.on('value', function (snap) {
+	                var result = Object.keys(snap.val()).map(function (k) {
+	                    return snap.val()[k];
+	                });
+	                //result.reverse();
+	                _this2.setState({ messagesList: result });
+	            });
+	        }
+
+	        //Remove the selected message, after modal's confirmation.
+
+	    }, {
+	        key: 'handleDelete',
+	        value: function handleDelete() {
+
+	            var messageRef = firebase.database().ref('messages');
+	            var query = messageRef.orderByChild('title').equalTo(this.state.selectedMessage);
+	            query.on('child_added', function (snapshot) {
+	                snapshot.ref.remove();
+	            });
+	            //console.log(item);
+
+	            //close the modal
+	            this.closeModal();
+	        }
+	    }, {
+	        key: 'removeDatabaseReference',
+	        value: function removeDatabaseReference() {
+	            var rootRef = firebase.database().ref().child('messages').orderByKey();
+	            rootRef.off();
+	        }
+	    }, {
+	        key: 'handleTitle',
+	        value: function handleTitle(event) {
+	            event.preventDefault();
+	            this.setState({ newTitle: event.target.value });
+	        }
+	    }, {
+	        key: 'handleMessage',
+	        value: function handleMessage(event) {
+	            event.preventDefault();
+	            this.setState({ newMessage: event.target.value });
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(event) {
+	            event.preventDefault();
+	            if (this.verifyInputs()) {
+	                var text = this.state.newMessage.replace(/\r?\n/g, '\n');
+
+	                var message = {
+	                    title: this.state.newTitle,
+	                    message: text
+	                };
+	                firebase.database().ref('messages').push(message);
+	                this.clearInputs();
+	            } else {
+	                alert('Debes completar el título y el mensaje');
+	            }
+	        }
+	    }, {
+	        key: 'verifyInputs',
+	        value: function verifyInputs() {
+	            if (this.state.newTitle !== '' && this.state.newMessage !== '') {
+	                return true;
+	            } else {
+	                return false;
+	            }
+	        }
+	    }, {
+	        key: 'clearInputs',
+	        value: function clearInputs() {
+	            this.setState({
+	                newMessage: '',
+	                newTitle: ''
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'col-md-12' },
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Accordion,
+	                        null,
+	                        this.state.messagesList.map(function (t) {
+	                            var title = _react2.default.createElement(
+	                                'div',
+	                                { className: 'col-md-12' },
+	                                _react2.default.createElement(
+	                                    'h5',
+	                                    null,
+	                                    t.title
+	                                )
+	                            );
+
+	                            return _react2.default.createElement(
+	                                _reactBootstrap.Panel,
+	                                { key: t.title, header: title, eventKey: t.title, style: { padding: "1px" }, bsStyle: 'primary' },
+	                                _react2.default.createElement(
+	                                    'div',
+	                                    { className: 'col-md-12' },
+	                                    _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove', 'aria-hidden': 'false', onClick: this.openModal.bind(this, t.title), style: { float: "right", paddingRight: "5px" } }),
+	                                    t.message.split('\n').map(function (item) {
+	                                        return _react2.default.createElement(
+	                                            'span',
+	                                            { key: Math.random() },
+	                                            item,
+	                                            _react2.default.createElement('br', null)
+	                                        );
+	                                    })
+	                                )
+	                            );
+	                        }, this)
+	                    ),
+	                    _react2.default.createElement(NewMessasge, { submit: this.handleSubmit, title: this.state.newTitle, message: this.state.newMessage, titleChange: this.handleTitle, messageChange: this.handleMessage }),
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Modal,
+	                        { show: this.state.showModal, onHide: this.closeModal.bind(this) },
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Modal.Header,
+	                            { closeButton: true },
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Modal.Title,
+	                                null,
+	                                'Eliminar Mensaje'
+	                            )
+	                        ),
+	                        _react2.default.createElement(_reactBootstrap.Modal.Body, null),
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Modal.Footer,
+	                            null,
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { onClick: this.handleDelete.bind(this) },
+	                                'Eliminar'
+	                            ),
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { onClick: this.closeModal.bind(this) },
+	                                'Cancelar'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return Messages;
+	}(_react2.default.Component);
+
+	exports.default = Messages;
+
+	var NewMessasge = function (_React$Component2) {
+	    _inherits(NewMessasge, _React$Component2);
+
+	    function NewMessasge(props) {
+	        _classCallCheck(this, NewMessasge);
+
+	        return _possibleConstructorReturn(this, (NewMessasge.__proto__ || Object.getPrototypeOf(NewMessasge)).call(this, props));
+	    }
+
+	    _createClass(NewMessasge, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                { className: 'col-md-12' },
+	                _react2.default.createElement(
+	                    'form',
+	                    { onSubmit: this.props.submit },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { className: 'form-group' },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'inputMessage' },
+	                            'Mensaje:'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', className: 'form-control', value: this.props.title, onChange: this.props.titleChange, placeholder: 'T\xEDtulo' }),
+	                        _react2.default.createElement('textarea', { className: 'form-control', id: 'inputMessage', rows: '10', value: this.props.message, onChange: this.props.messageChange, placeholder: 'Mensaje', required: true })
+	                    ),
+	                    _react2.default.createElement('input', { type: 'submit', value: 'Agregar', className: 'btn btn-primary', style: { float: "right" } })
+	                )
+	            );
+	        }
+	    }]);
+
+	    return NewMessasge;
+	}(_react2.default.Component);
 
 /***/ }
 /******/ ]);

@@ -18,8 +18,8 @@ export default class Agency extends React.Component {
       this.handleDelete = this.handleDelete.bind(this);
     
       //var id = this.getURLParameter("id");
-      console.log(this.props);
-      console.log(this.props.location.query.id);
+      //console.log(this.props);
+      //console.log(this.props.location.query.id);
 
     }
 
@@ -56,9 +56,16 @@ export default class Agency extends React.Component {
 
     handleSubmit(event){
       event.preventDefault();
-      firebase.database().ref('agencies').push({
-          'name' : this.state.newAgency
-      });
+      if(this.verifyInputs()){
+         firebase.database().ref('agencies').push({
+           'name' : this.state.newAgency
+          });
+        this.clearInputs();
+
+      }else{
+        alert('Completar los datos');
+      }
+    
     }
 
     handleDelete(itemSelected, e){
@@ -75,6 +82,20 @@ export default class Agency extends React.Component {
         rootRef.off();
     }
 
+
+    
+
+    verifyInputs(){
+      if(this.state.newAgency !== ''){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    clearInputs(){
+      this.setState({ newAgency : ''});
+    }
 
     render() {
         return (

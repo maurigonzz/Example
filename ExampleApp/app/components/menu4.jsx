@@ -24,6 +24,7 @@ class Menu4 extends React.Component {
           
                       <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
+                            <li><Link to="messagesList">Mensajes</Link></li>
                             <li><Link to="trackingList">Envíos</Link></li>
                             <li><Link to="newTracking">Envío Nuevo</Link></li>
                             <li><Link to="clientTracking">Cliente</Link></li>

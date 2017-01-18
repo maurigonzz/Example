@@ -7,6 +7,8 @@ import FilterTrack from './FilterTrack.jsx';
 
 import * as firebase from 'firebase';
 import * as config from './config.jsx'
+import * as databaseFactory from './firebaseTest.jsx'
+
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 
@@ -28,6 +30,7 @@ export default class TrackingList extends React.Component {
 
     componentDidMount(){
         this.loadTrackings();
+        
     }
 
 
@@ -40,7 +43,7 @@ export default class TrackingList extends React.Component {
         var rootRef = firebase.database().ref().child('trackings').orderByKey();
         rootRef.on('value', snap => {
             var result = Object.keys(snap.val()).map(function(k) { return snap.val()[k] });
-            console.log(result);
+            result.reverse();
             this.setState({trackings : result});
         });
     }
@@ -62,11 +65,19 @@ export default class TrackingList extends React.Component {
     }
 
 
-    //Must be corrected. Now is case sensitve.
     searchTrackings(query){
         var searchResult = [];
+        var agency = '';
+        var name = '';
+        var trackingNumber = '';
+        var queryFilter = query.toLowerCase();
+        
         this.state.trackings.map(function(t){
-            if ( ((t.agency).indexOf(query) > -1) || ((t.name).indexOf(query) > -1) || ((t.trackingNumber).indexOf(query) > -1) ) {
+            agency = t.agency.toLowerCase();
+            name = t.name.toLowerCase();
+            trackingNumber = t.trackingNumber.toLowerCase();
+
+            if ( ((agency).indexOf(queryFilter) > -1) || ((name).indexOf(queryFilter) > -1) || ((trackingNumber).indexOf(queryFilter) > -1) ) {
                 searchResult.push(t);
             }
         });

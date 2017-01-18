@@ -13,6 +13,8 @@ import Tracking from './Tracking.jsx';
 import Agency from './Agency.jsx';
 import ClientTracking from './clientTracking.jsx';
 import Login from './login.jsx';
+import MessagesList from './messages.jsx';
+
 import * as firebase from 'firebase';
 
 
@@ -101,6 +103,7 @@ ReactDOM.render(
             <Route path = "newTracking" component = {NewTracking} />
             <Route path = "agency" component = {Agency} />
             <Route path = "clientTracking" component = {ClientTracking} />
+            <Route path = "messagesList" component = {MessagesList} />
         </Route>
     </Router>
 ,

@@ -18,38 +18,40 @@ export default class ClientTracking extends React.Component{
 
 	};
 
-	 componentWillMount(){
+
+    componentDidMount(){
         this.loadTracking();
+        
     }
 
+    componentWillUnmount(){
+        this.removeDatabaseReference();
+        console.log("unmounted");
+    }  
 
 
-	loadTracking(){
+    removeDatabaseReference(){
         var urlId = this.props.location.query.id;
-        var url = config.apiClientQuery + '%22' + urlId + '%22';
-        fetch(url)
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                var result = Object.keys(data).map(function(k) { return data[k] });
-                //this.setState({ trackings : arr}, function(){console.log(this.state.trackings);});
-                this.setState({
-                        trackingNumber : result[0].trackingNumber,
-                        name : result[0].name,
-                        date : result[0].date,
-                        agency : result[0].agency
-                });
-              	
-                console.log(result);
-                //console.log(this.state.name);
-
-
-            }).catch((error) => {
-                console.error(error);
-        });
+        var rootRef = firebase.database().ref().child('trackings').equalTo(urlId);
+        rootRef.off();
     }
 
+
+    loadTracking(){
+        var urlId = this.props.location.query.id;
+        var trackingloaded = ''; 
+        
+        var rootRef = firebase.database().ref().child('trackings').orderByChild("trackingNumber").equalTo(urlId).on("child_added", 
+            function(snapshot) {
+                trackingloaded = snapshot.val();
+                this.setState({
+                        trackingNumber : trackingloaded.trackingNumber,
+                        name : trackingloaded.name,
+                        date : trackingloaded.date,
+                        agency : trackingloaded.agency
+                });
+            }, this);
+    }
 
 
 	render(){
@@ -67,7 +69,7 @@ export default class ClientTracking extends React.Component{
                                 <h5>Número de envío: {this.state.trackingNumber}</h5>
                                 <div style={{display : "inline-block"}}>
                                     <h5 style={{float : "left"}}>Estado:</h5>
-                                    <span className="btn btn-success">Enviado</span>
+                                    <span className="btn btn-success" style={{marginLeft : "10px"}}>Enviado</span>
                                 </div>
                                 {
                                     (this.state.agency === "DAC") ? (
