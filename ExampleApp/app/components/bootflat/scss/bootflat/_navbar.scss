@@ -2,8 +2,8 @@
 //------------------------------------------------------
 //$navbar-background-color:                    $mint-dark !default;
 //$navbar-background-color-active:             $mint-light !default;
-$navbar-background-color:                    $bluejeans-dark !default;
-$navbar-background-color-active:             $bluejeans-light !default;
+$navbar-background-color:                    #4a4b4c !default;
+$navbar-background-color-active:             #ff0090 !default;
 
 
 $navbar-font-color:                          $white !default;
@@ -44,7 +44,8 @@ $navbar-inverse-background-color:            $black !default;
       }
       & .navbar-text,
       & .navbar-nav > li > a {
-          color: darken($navbar-background-color, 15%);
+          //color: darken($navbar-background-color, 60%);
+           color: darken($navbar-font-color, 20%);
       }
       & .navbar-nav > li > a:hover,
       & .navbar-nav > li > a:focus {

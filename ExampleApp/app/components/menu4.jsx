@@ -18,10 +18,10 @@ class Menu4 extends React.Component {
                           <span className="icon-bar"></span>
                           <span className="icon-bar"></span>
                         </button>
-                        <a className="navbar-brand" href="#">Brand</a>
+                        <a className="navbar-brand" href="#" style={{color : "#ff0090", float: "left", fontWeight: "bold", fontSize: "26px"}}>Brand <p style={{float : "right", color: "white", fontWeight: "bold", fontSize: "26px"}}></p></a>
                       </div>
 
-          
+                      
                       <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul className="nav navbar-nav">
                             <li><Link to="messagesList">Mensajes</Link></li>
@@ -31,15 +31,13 @@ class Menu4 extends React.Component {
                           <li className="dropdown">
                             <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Agencias <span className="caret"></span></a>
                             <ul className="dropdown-menu">
-                              <li><Link to="agency">Nueva</Link></li>
+                              <li><Link to="agency" style={{color : 'white'}}>Nueva</Link></li>
                               <li role="separator" className="divider"></li>
-                              <li><a href="#">Separated link</a></li>
+                              <li><Link to="routesList" style={{color : 'white'}}>Costos</Link></li>
                               <li role="separator" className="divider"></li>
-                              <li><a href="#">One more separated link</a></li>
                             </ul>
                           </li>
-                              <li role="separator" className="divider"></li>
-                              <li onClick={this.props.logout}><Link>Salir</Link></li>
+                          <li onClick={this.props.logout}><Link>Salir</Link></li>
 
                         </ul>
                         

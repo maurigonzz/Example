@@ -10,7 +10,9 @@ export default class Agency extends React.Component {
       super(props);
       this.state = {
                       agencies : [],
-                      newAgency : ''
+                      newAgency : '',
+                      selectedAgency : '',
+                      showModal : false
                 };
 
       this.handleNewAgency =  this.handleNewAgency.bind(this);
@@ -27,6 +29,7 @@ export default class Agency extends React.Component {
 
     componentDidMount(){ 
         this.loadAgencies();
+        this.testAddCityCost();
 
 
         
@@ -42,7 +45,18 @@ export default class Agency extends React.Component {
         this.setState({newAgency : event.target.value});
     }
 
-
+    //Open the modal and save the selected message.
+    openModal(item, e) {
+        this.setState({ 
+            showModal: true, 
+            selectedAgency : item
+        });
+        //console.log(this.state.selectedMessage);
+    }
+    
+    closeModal() {
+        this.setState({ showModal: false });
+    }
 
     loadAgencies(){
         var rootRef = firebase.database().ref().child('agencies').orderByKey();
@@ -68,13 +82,14 @@ export default class Agency extends React.Component {
     
     }
 
-    handleDelete(itemSelected, e){
+    handleDelete(){
         var trackingsRef = firebase.database().ref('agencies');
-        var query = trackingsRef.orderByChild('name').equalTo(itemSelected);
+        var query = trackingsRef.orderByChild('name').equalTo(this.state.selectedAgency);
         query.on('child_added', function(snapshot) {
             snapshot.ref.remove();
         });
         //console.log(item);
+        this.closeModal();
     }
 
     removeDatabaseReference(){
@@ -96,6 +111,31 @@ export default class Agency extends React.Component {
     clearInputs(){
       this.setState({ newAgency : ''});
     }
+
+
+
+    
+    
+    testAddCityCost(){
+        var city = {
+            city : 'San José',
+            cost : '100'
+        };
+
+
+        var agenciesRef = firebase.database().ref('agencies');
+                var query = agenciesRef.orderByChild('name').equalTo('Agencia');
+                query.on('child_added', function(snapshot) {
+                    snapshot.ref.child('routes').push(city);
+                });
+
+
+         //firebase.database().ref('agencies/cities').push(city);
+    }
+
+
+
+
 
     render() {
         return (
@@ -122,7 +162,7 @@ export default class Agency extends React.Component {
                                   this.state.agencies.map(function(agency){
                                     return(
                                         <li key={agency} className="list-group-item">{agency}
-                                          <span className="glyphicon glyphicon-remove" aria-hidden="false" onClick={this.handleDelete.bind(this, agency)} style={ {float: "right"}}></span>
+                                          <span className="glyphicon glyphicon-remove" aria-hidden="false" onClick={this.openModal.bind(this, agency)} style={ {float: "right"}}></span>
                                         </li>
                                       )
                                   },this)
@@ -130,7 +170,19 @@ export default class Agency extends React.Component {
                                 }
                                 </ul>
                             </div>
-                          </div>       
+                        </div>     
+                        
+                        <Modal show={this.state.showModal} onHide={this.closeModal.bind(this)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Eliminar Agencia</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                            </Modal.Body>
+                            <Modal.Footer>  
+                                <Button onClick={this.handleDelete.bind(this)}>Eliminar</Button>
+                                <Button onClick={this.closeModal.bind(this)}>Cancelar</Button>
+                            </Modal.Footer>
+                        </Modal>  
             </div>
 
         );

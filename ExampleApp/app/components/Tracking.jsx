@@ -129,8 +129,7 @@ export default class Tracking extends React.Component {
 
                               <Modal.Footer>
                                 <input type="submit" value={this.props.submitType} className="btn btn-primary"/>
-                                <Button  bsStyle="danger">Close</Button>
-                            </Modal.Footer>
+                              </Modal.Footer>
                           </form>        
             </div>
 

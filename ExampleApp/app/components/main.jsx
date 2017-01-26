@@ -15,6 +15,8 @@ import ClientTracking from './clientTracking.jsx';
 import Login from './login.jsx';
 import MessagesList from './messages.jsx';
 
+import RoutesList from './routes.jsx';
+
 import * as firebase from 'firebase';
 
 
@@ -27,7 +29,7 @@ import * as firebase from 'firebase';
   };
   firebase.initializeApp(config);
   var database = firebase.database();
-
+  var storage = firebase.storage();
 
 
 class App extends React.Component{
@@ -104,6 +106,7 @@ ReactDOM.render(
             <Route path = "agency" component = {Agency} />
             <Route path = "clientTracking" component = {ClientTracking} />
             <Route path = "messagesList" component = {MessagesList} />
+            <Route path = "routesList" component = {RoutesList} />
         </Route>
     </Router>
 ,

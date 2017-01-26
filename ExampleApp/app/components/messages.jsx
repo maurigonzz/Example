@@ -40,11 +40,6 @@ export default class Messages extends React.Component {
     }   
 
 
-    closeModal() {
-        this.setState({ showModal: false });
-    }
-
-
     //Open the modal and save the selected message.
     openModal(item, e) {
         this.setState({ 
@@ -53,6 +48,13 @@ export default class Messages extends React.Component {
         });
         //console.log(this.state.selectedMessage);
     }
+    
+    closeModal() {
+        this.setState({ showModal: false });
+    }
+
+
+    
     
     loadMessages(){
         var rootRef = firebase.database().ref().child('messages').orderByKey();

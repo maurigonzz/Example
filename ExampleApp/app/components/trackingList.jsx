@@ -18,7 +18,9 @@ export default class TrackingList extends React.Component {
 		super(props);
 		this.state = { 
                 trackings : [],
-                url : config.agencyUrl
+                url : config.agencyUrl,
+                selectedTracking : '',
+                showModal : false
          };
 
 
@@ -33,6 +35,18 @@ export default class TrackingList extends React.Component {
         
     }
 
+    //Open the modal and save the selected message.
+    openModal(item, e) {
+        this.setState({ 
+            showModal: true, 
+            selectedTracking : item
+        });
+        //console.log(this.state.selectedMessage);
+    }
+    
+    closeModal() {
+        this.setState({ showModal: false });
+    }
 
     componentWillUnmount(){
         this.removeDatabaseReference();
@@ -49,13 +63,14 @@ export default class TrackingList extends React.Component {
     }
 
 
-    handleDelete(item, e){
+    handleDelete(){
         var trackingsRef = firebase.database().ref('trackings');
-        var query = trackingsRef.orderByChild('trackingNumber').equalTo(item );
+        var query = trackingsRef.orderByChild('trackingNumber').equalTo(this.state.selectedTracking);
         query.on('child_added', function(snapshot) {
             snapshot.ref.remove();
         });
         //console.log(item);
+        this.closeModal();
     }
 
 
@@ -101,17 +116,16 @@ export default class TrackingList extends React.Component {
         		{
                     this.state.trackings.map(function(t){
                         return(
-    	    			<div key={t.trackingNumber} className="panel panel-primary">
+    	    			<div key={t.trackingNumber} className="panel panel-primary" >
     	    				<div className="panel-heading">
-    	    					<h3 className="panel-title">{t.name}</h3>
+    	    					<p className="panel-title" style={{fontWeight : "bold"}}>{t.name}</p>
                                 
     	    				</div>
     	    				<div className="panel-body">
     	    					<p>Agencia: {t.agency}</p>
                                 <p>Fecha: {t.date}</p>
-                                <p># {t.trackingNumber}</p>
-                                <p>url</p>
-                                <ModifyButton deleteOption={this.handleDelete.bind(this, t.trackingNumber)} url={this.state.url + t.trackingNumber} active={t.agency === 'DAC'} />
+                                <p>Número: {t.trackingNumber}</p>
+                                <ModifyButton deleteOption={this.openModal.bind(this, t.trackingNumber)} url={this.state.url + t.trackingNumber} active={t.agency === 'DAC'} />
                             </div>
     	    			</div>
 
@@ -120,6 +134,18 @@ export default class TrackingList extends React.Component {
         			
         		}
         		</div>
+                
+                <Modal show={this.state.showModal} onHide={this.closeModal.bind(this)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Eliminar Envío</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                        </Modal.Body>
+                        <Modal.Footer>  
+                            <Button onClick={this.handleDelete.bind(this)}>Eliminar</Button>
+                            <Button onClick={this.closeModal.bind(this)}>Cancelar</Button>
+                        </Modal.Footer>
+                </Modal>
             </div>
     	);
     }
