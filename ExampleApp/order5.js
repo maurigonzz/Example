@@ -24,17 +24,19 @@
 
 
     var myAppJavaScript = function($){
-      console.log('Im using jQuery version: ' + $.fn.jquery);
+        console.log('Im using jQuery version: ' + $.fn.jquery);
         myButton = document.createElement("input");
         myButton.setAttribute("id", "paymentButton");
         myButton.type = "button";
         myButton.value = "Pagar con Tarjeta";
-        placeHolder = document.getElementsByClassName("footer-payments-shipping-logos");
+        placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
         placeHolder[0].appendChild(myButton);
         console.log("Hello world! con tarjeta");
 
 
+        
         $( "#paymentButton" ).click(function(){
+            /*
             $.ajax({
                 url:"https://8gvb7vktrc.execute-api.us-east-2.amazonaws.com/test/helloworld",
                 type:"POST",
@@ -51,7 +53,13 @@
                     console.log("error al cargar medio de pago");
                 }
             })
+            */
+
+            window.location.href = "https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=198661612-115b16ac-a62d-40cb-8446-9733b0442a5a";
         });
+        
+
+
     };
 
     // For jQuery version 1.7
