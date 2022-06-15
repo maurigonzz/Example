@@ -27,6 +27,7 @@
         console.log('Im using jQuery version: ' + $.fn.jquery);
         myButton = document.createElement("input");
         myButton.setAttribute("id", "paymentButton");
+        myButton.setAttribute('class', 'btn-full btn btn-primary');
         myButton.type = "button";
         myButton.value = "Pagar con Tarjeta";
         placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
