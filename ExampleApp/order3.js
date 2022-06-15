@@ -21,20 +21,44 @@
             document.getElementsByTagName("head")[0].appendChild(script);
     };
 
+    var paymentButton = function(){
+        myButton = document.createElement("input");
+        myButton.setAttribute("id", "paymentButton");
+        myButton.setAttribute('class', 'btn-full btn btn-primary');
+        myButton.type = "button";
+        myButton.value = "Pagar con Tarjeta";
+        return myButton;
+    };
 
 
     var myAppJavaScript = function($){
-      console.log('Im using jQuery version: ' + $.fn.jquery);
-        myButton = document.createElement("input");
-        myButton.setAttribute("id", "paymentButton");
-        myButton.type = "button";
-        myButton.value = "Pagar con Tarjeta";
-        placeHolder = document.getElementsByClassName("checkout-method");
-        placeHolder.appendChild(myButton);
-        console.log("Hello world! con tarjeta");
+        console.log('Im using jQuery version: ' + $.fn.jquery);
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+          });
+          
+          if (params.payment === null) {
+            myButton = paymentButton;
+            placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
+            placeHolder[0].appendChild(myButton);
+            console.log("Hello world! con tarjeta");
+          }
+
+          if (params.payment === "success") {
+            elements = Array.from(document.querySelectorAll("h3"));
+            element = elements.find(el => {return el.textContent.toLowerCase().includes("En espera de pago");});
+            element.innerHTML = "Gracias por tu compra!";
+
+            elements = Array.from(document.querySelectorAll("p"));
+            element = elements.find(el => {return el.textContent.toLowerCase().includes("En espera de pago");});
+            element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado.";
+          }
 
 
+
+        
         $( "#paymentButton" ).click(function(){
+            /*
             $.ajax({
                 url:"https://8gvb7vktrc.execute-api.us-east-2.amazonaws.com/test/helloworld",
                 type:"POST",
@@ -51,7 +75,16 @@
                     console.log("error al cargar medio de pago");
                 }
             })
+            */
+            
+            var origin   = window.location.origin;
+            var successUrl = origin + "?payment=success";
+
+            window.location.href = successUrl;
         });
+        
+
+
     };
 
     // For jQuery version 1.7
