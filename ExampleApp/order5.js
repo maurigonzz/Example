@@ -21,18 +21,40 @@
             document.getElementsByTagName("head")[0].appendChild(script);
     };
 
-
-
-    var myAppJavaScript = function($){
-        console.log('Im using jQuery version: ' + $.fn.jquery);
+    var paymentButton = function(){
         myButton = document.createElement("input");
         myButton.setAttribute("id", "paymentButton");
         myButton.setAttribute('class', 'btn-full btn btn-primary');
         myButton.type = "button";
         myButton.value = "Pagar con Tarjeta";
-        placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
-        placeHolder[0].appendChild(myButton);
-        console.log("Hello world! con tarjeta");
+        return myButton;
+    };
+
+
+    var myAppJavaScript = function($){
+        console.log('Im using jQuery version: ' + $.fn.jquery);
+        const params = new Proxy(new URLSearchParams(window.location.search), {
+            get: (searchParams, prop) => searchParams.get(prop),
+          });
+          
+          if (params.payment === null) {
+              //check if payment is ready. If the user back to this page. 
+            myButton = paymentButton();
+            placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
+            placeHolder[0].appendChild(myButton);
+            console.log("Hello world! con tarjeta");
+          }
+
+          if (params.payment === "success") {
+            elements = Array.from(document.querySelectorAll("h3"));
+            element = elements.find(el => {return el.textContent.toLowerCase().includes("En espera de pago");});
+            element.innerHTML = "Gracias por tu compra!";
+
+            elements = Array.from(document.querySelectorAll("p"));
+            element = elements.find(el => {return el.textContent.toLowerCase().includes("En espera de pago");});
+            element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado.";
+          }
+
 
 
         
@@ -55,8 +77,11 @@
                 }
             })
             */
+            
+            var origin   = window.location.origin;
+            var successUrl = origin + "?payment=success";
 
-            window.location.href = "https://www.mercadopago.com.uy/checkout/v1/redirect?pref_id=198661612-115b16ac-a62d-40cb-8446-9733b0442a5a";
+            window.location.href = successUrl;
         });
         
 
