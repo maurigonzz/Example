@@ -30,30 +30,59 @@
         return myButton;
     };
 
+    var paymentText = function(message){
+        textElement = document.createElement("p");
+        textElement.setAttribute("id", "paymentText");
+        textElement.innerHTML = message;
+        return textElement;
+    };
 
     var myAppJavaScript = function($){
+        isSuccessOrder = location.pathname.includes("/checkout/v3/success/");
+        if (!isSuccessOrder || !LS.cart.contact.email === "maurigonzz@gmail.com") {
+            console.log("Prod mode");
+            return;
+        }
+
+
+
+        console.log("DEV mode");
         console.log('Im using jQuery version: ' + $.fn.jquery);
         const params = new Proxy(new URLSearchParams(window.location.search), {
             get: (searchParams, prop) => searchParams.get(prop),
           });
           
-          if (params.payment === null) {
+        if (params.payment === null) {
               //check if payment is ready. If the user back to this page. 
             myButton = paymentButton();
             placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
             placeHolder[0].appendChild(myButton);
             console.log("Hello world! con tarjeta");
-          }
+        }
 
-          if (params.payment === "success") {
-            elements = Array.from(document.querySelectorAll("h3"));
-            element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
-            element.innerHTML = "Gracias por tu compra!";
+        $( document ).ready(function() {
+            if (params.payment === "success") {
+                elements = Array.from(document.querySelectorAll("h3"));
+                element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
+                element.innerHTML = "Gracias por tu compra!";
+    
+                //elements = Array.from(document.querySelectorAll("p"));
+                //element = elements.find(el => {return el.textContent.toLowerCase().includes("gracias por tu compra");});
+                //element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado.";
 
-            elements = Array.from(document.querySelectorAll("p"));
-            element = elements.find(el => {return el.textContent.toLowerCase().includes("gracias por tu compra");});
-            element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado.";
-          }
+                currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
+                currentMessage[0].remove();
+
+                currentPaymentStatus = document.getElementsByClassName("history-item history-item-incomplete");
+                currentPaymentStatus[0].remove();
+
+                message = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado."
+                paymentMessage = paymentText(message);
+                
+                statusDiv = document.getElementsByClassName("status-content");
+                statusDiv[0].appendChild(paymentMessage);
+              }
+        });
 
 
 
@@ -78,7 +107,7 @@
             })
             */
             
-            var origin   = window.location.origin;
+            var origin   = window.location.href;
             var successUrl = origin + "?payment=success";
 
             window.location.href = successUrl;
