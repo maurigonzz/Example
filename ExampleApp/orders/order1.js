@@ -73,8 +73,8 @@
                 currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
                 currentMessage[0].remove();
 
-                currentPaymentStatus = document.getElementsByClassName("history-item history-item-incomplete");
-                currentPaymentStatus[0].remove();
+                currentPaymentStatus = document.getElementsByClassName("history-item-incomplete");
+                currentPaymentStatus[1].remove();
 
                 message = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado."
                 paymentMessage = paymentText(message);
@@ -84,10 +84,35 @@
               }
         });
 
+        if (params.payment === "failure") {
+            elements = Array.from(document.querySelectorAll("h3"));
+            element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
+            element.innerHTML = "Hubo un problema al procesar el pago con Mercado Pago";
 
+            currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
+            currentMessage[0].remove();
+
+            //currentPaymentStatus = document.getElementsByClassName("history-item-incomplete");
+            //currentPaymentStatus[1].remove();
+
+            message = "No te preocupes nos pondremos en contacto para coordinar el pago."
+            paymentMessage = paymentText(message);
+                
+            statusDiv = document.getElementsByClassName("status-content");
+            statusDiv[0].appendChild(paymentMessage);
+        }
 
         
         $( "#paymentButton" ).click(function(){
+
+            //check if this property includes the disccount.
+            let orderTotal = LS.order.total / 100;
+            let orderNumber = LS.order.number;
+            let contactEmail = LS.cart.contact.email;
+            console.log("total; " + orderTotal);
+            console.log("orderNumber; " + orderTotal);
+            console.log("contactEmail; " + orderTotal);
+
             /*
             $.ajax({
                 url:"https://8gvb7vktrc.execute-api.us-east-2.amazonaws.com/test/helloworld",
@@ -107,8 +132,13 @@
             })
             */
             
-            var origin   = window.location.href;
-            var successUrl = origin + "?payment=success";
+            //var origin   = window.location.href;
+            //var successUrl = origin + "?payment=success";
+            
+            var origin   = window.location.origin;
+            var pathname = window.location.pathname;
+            var successUrl = origin + pathname + "?payment=success";
+
 
             window.location.href = successUrl;
         });
