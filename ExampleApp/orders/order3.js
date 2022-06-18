@@ -38,6 +38,15 @@
     };
 
     var myAppJavaScript = function($){
+        isSuccessOrder = location.pathname.includes("/checkout/v3/success/");
+        if (!isSuccessOrder || !LS.cart.contact.email === "maurigonzz@gmail.com") {
+            console.log("Prod mode");
+            return;
+        }
+
+
+
+        console.log("DEV mode");
         console.log('Im using jQuery version: ' + $.fn.jquery);
         const params = new Proxy(new URLSearchParams(window.location.search), {
             get: (searchParams, prop) => searchParams.get(prop),
@@ -64,6 +73,9 @@
                 currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
                 currentMessage[0].remove();
 
+                currentPaymentStatus = document.getElementsByClassName("history-item-incomplete");
+                currentPaymentStatus[1].remove();
+
                 message = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado."
                 paymentMessage = paymentText(message);
                 
@@ -76,6 +88,15 @@
 
         
         $( "#paymentButton" ).click(function(){
+
+            //check if this property includes the disccount.
+            let orderTotal = LS.order.total / 100;
+            let orderNumber = LS.order.number;
+            let contactEmail = LS.cart.contact.email;
+            console.log("total; " + orderTotal);
+            console.log("orderNumber; " + orderTotal);
+            console.log("contactEmail; " + orderTotal);
+
             /*
             $.ajax({
                 url:"https://8gvb7vktrc.execute-api.us-east-2.amazonaws.com/test/helloworld",
@@ -95,8 +116,13 @@
             })
             */
             
-            var origin   = window.location.href;
-            var successUrl = origin + "?payment=success";
+            //var origin   = window.location.href;
+            //var successUrl = origin + "?payment=success";
+            
+            var origin   = window.location.origin;
+            var pathname = window.location.pathname;
+            var successUrl = origin + pathname + "?payment=success";
+
 
             window.location.href = successUrl;
         });
