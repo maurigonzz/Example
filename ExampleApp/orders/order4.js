@@ -86,6 +86,7 @@
                 let payNowButton = addButton("payNowButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con Tarjeta");
                 let payLaterButton = addButton("payLaterButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con otro medio de pago");
                 payLaterButton.style.backgroundColor = "#99A3A4";
+                payLaterButton.href = window.location.origin + window.location.pathname;
 
                 divWrapper.appendChild(payNowButton);
                 divWrapper.appendChild(payLaterButton);
