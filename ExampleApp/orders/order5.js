@@ -39,6 +39,13 @@
             return myButton;
         };
 
+        var addCustomElement = function(tag, id, className){
+            let element = document.createElement(tag);
+            element.setAttribute("id", id);
+            element.setAttribute('class', className);
+            return element;
+        };
+
         var paymentText = function(message){
             textElement = document.createElement("p");
             textElement.setAttribute("id", "paymentText");
@@ -69,28 +76,24 @@
                 //placeHolder[0].appendChild(myButton);
                 //console.log("Hello world! con tarjeta");
 
-                divWrapper = document.createElement("div");
-                myButton.setAttribute("id", "divButtonsWrapper");
-                myButton.setAttribute('class', 'row third-gutters');
+                let divWrapper = document.createElement("div");
+                divWrapper.setAttribute("id", "divButtonsWrapper");
+                divWrapper.setAttribute('class', 'row third-gutters');
 
 
 
                 
-                let payLaterButtonpayNowButton = addButton("payNowButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con Tarjeta");
+                let payNowButton = addButton("payNowButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con Tarjeta");
                 let payLaterButton = addButton("payLaterButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con otro medio de pago");
                 payLaterButton.style.backgroundColor = "#99A3A4";
+                payLaterButton.href = window.location.origin + window.location.pathname + "?payment=other";
 
                 divWrapper.appendChild(payNowButton);
                 divWrapper.appendChild(payLaterButton);
 
                 let customPaymentDiv = document.getElementsByClassName("custom-payment text-pre-wrap")[0];
                 customPaymentDiv.appendChild(divWrapper);
-                
 
-
-
-
-                
             }
 
             $( document ).ready(function() {
@@ -135,8 +138,31 @@
                 statusDiv[0].appendChild(paymentMessage);
             }
 
+            if (params.payment === "other") {
+                let elements = Array.from(document.querySelectorAll("h3"));
+                let element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
+                element.innerHTML = "Gracias por tu compra!";
+
+                let currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
+                currentMessage[0].remove();
+
+                let message = "Si quieres pagar en efectivo o no sabés como realizar el pago, no te preocupes, nos comunicaremos para coordinar el mismo.<br><br>"
+                    + "Si quieres pagar con transferencia bancaria, puedes solicitar los datos para la transfgerencia aquí:"
+                let paymentMessage = paymentText(message);
+
+                let whatsAppLink = addCustomElement("a", "whatsAppLinkId", "");
+                whatsAppLink.href = href="https://api.whatsapp.com/send?phone=59899203412";
+
+                let whatsappIcon = addCustomElement("svg", "whatsappIconId", "icon-inline icon-3x svg-icon-text");
+                whatsappIcon.appendChild(whatsAppLink);
+
+                
+                let statusDiv = document.getElementsByClassName("status-content")[0];
+                statusDiv.appendChild(paymentMessage);
+                statusDiv.appendChild(whatsappIcon);
+            }
             
-            $( "#paymentButton" ).click(function(){
+            $("#payNowButtonId").click(function(){
 
                 //check if this property includes the disccount.
                 let orderTotal = LS.order.total / 100;
@@ -176,7 +202,9 @@
                 window.location.href = successUrl;
             });
             
-
+            $("#payLaterButtonId").click(function(){
+                window.location.href = window.location.origin + window.location.pathname + "?payment=other";
+            });
 
         };
 
