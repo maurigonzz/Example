@@ -69,30 +69,35 @@
             });
             
             if (params.payment === null) {
+                
                 //check if payment is ready. If the user back to this page. 
                 
-                //myButton = paymentButton();
-                //placeHolder = document.getElementsByClassName("custom-payment text-pre-wrap");
-                //placeHolder[0].appendChild(myButton);
-                //console.log("Hello world! con tarjeta");
 
-                let divWrapper = document.createElement("div");
-                divWrapper.setAttribute("id", "divButtonsWrapper");
-                divWrapper.setAttribute('class', 'row third-gutters');
+                //let divWrapper = document.createElement("div");
+                //divWrapper.setAttribute("id", "divButtonsWrapper");
+                //divWrapper.setAttribute('class', 'row third-gutters');
 
-
-
+                let currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
+                currentMessage[0].remove();
                 
-                let payNowButton = addButton("payNowButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con Tarjeta");
-                let payOtherButton = addButton("payOtherButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar con otro medio de pago");
-                payOtherButton.style.backgroundColor = "#99A3A4";
+                let paymentMethodText = paymentText("Tu pedido est\u00e1 confirmado!. Selecciona el medio de pago de tu preferencia.");
+
+                let payNowButton = addButton("payNowButtonId", "btn-full btn btn-primary col-12 col-sm-12 m-bottom-half-xs", "Pagar con Tarjeta");
+                let payOtherButton = addButton("payOtherButtonId", "btn-full btn btn-secondary col-12 col-sm-12 m-bottom-half-xs", "Otros medios de pago");
+                //payOtherButton.style.backgroundColor = "#99A3A4";
                 payOtherButton.href = window.location.origin + window.location.pathname + "?payment=other";
 
-                divWrapper.appendChild(payNowButton);
-                divWrapper.appendChild(payOtherButton);
+                //divWrapper.appendChild(payNowButton);
+                //divWrapper.appendChild(payOtherButton);
 
-                let customPaymentDiv = document.getElementsByClassName("custom-payment text-pre-wrap")[0];
-                customPaymentDiv.appendChild(divWrapper);
+                //let customPaymentDiv = document.getElementsByClassName("custom-payment text-pre-wrap")[0];
+                //customPaymentDiv.appendChild(divWrapper);
+
+                let statusDiv = document.getElementsByClassName("status-content")[0];
+                statusDiv.appendChild(paymentMethodText);
+                statusDiv.appendChild(payNowButton);
+                statusDiv.appendChild(addCustomElement("p", "customP", ""));
+                statusDiv.appendChild(payOtherButton);
 
             }
 
@@ -104,7 +109,7 @@
         
                     //elements = Array.from(document.querySelectorAll("p"));
                     //element = elements.find(el => {return el.textContent.toLowerCase().includes("gracias por tu compra");});
-                    //element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado.";
+                    //element.innerHTML = "En breve confirmaremos tu pago y tu pedido quedar\u00e1 listo para ser enviado o retirado.";
 
                     currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
                     currentMessage[0].remove();
@@ -112,7 +117,7 @@
                     currentPaymentStatus = document.getElementsByClassName("history-item-incomplete");
                     currentPaymentStatus[1].remove();
 
-                    message = "En breve confirmaremos tu pago y tu pedido quedará listo para ser enviado o retirado."
+                    message = "En breve confirmaremos tu pago y tu pedido quedar\u00e1 listo para ser enviado o retirado."
                     paymentMessage = paymentText(message);
                     
                     statusDiv = document.getElementsByClassName("status-content");
@@ -121,49 +126,39 @@
             });
 
             if (params.payment === "failure") {
-                elements = Array.from(document.querySelectorAll("h3"));
-                element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
+                let elements = Array.from(document.querySelectorAll("h3"));
+                let element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
                 element.innerHTML = "Hubo un problema al procesar el pago con Mercado Pago";
 
-                currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
+                let currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
                 currentMessage[0].remove();
 
-                //currentPaymentStatus = document.getElementsByClassName("history-item-incomplete");
-                //currentPaymentStatus[1].remove();
-
-                message = "No te preocupes nos pondremos en contacto para coordinar el pago."
-                paymentMessage = paymentText(message);
+                let paymentMessage = paymentText("No te preocupes nos pondremos en contacto para coordinar el pago.");
+                let backButton = addButton("backButtonId", "btn-full btn btn-secondary col-12 col-sm-12 m-bottom-half-xs", "Volver");
                     
-                statusDiv = document.getElementsByClassName("status-content");
-                statusDiv[0].appendChild(paymentMessage);
+                let statusDiv = document.getElementsByClassName("status-content")[0];
+                statusDiv.appendChild(paymentMessage);
+                statusDiv.appendChild(backButton);
             }
 
             if (params.payment === "other") {
                 let elements = Array.from(document.querySelectorAll("h3"));
                 let element = elements.find(el => {return el.textContent.toLowerCase().includes("en espera de pago");});
-                element.innerHTML = "Gracias por tu compra!";
+                //element.innerHTML = "Gracias por tu compra!";
 
                 let currentMessage = document.getElementsByClassName("custom-payment text-pre-wrap");
                 currentMessage[0].remove();
 
-                let payLaterMessage = "Si quieres pagar en efectivo o no sabés como realizar el pago, no te preocupes, nos comunicaremos para coordinar el mismo."
+                let payLaterMessage = "Si quieres pagar al retirar tu compra, o no sabes como realizar el pago, no te preocupes, selecciona pagar luego y nos comunicaremos para coordinar el mismo."
                 let payLaterMessageElement = paymentText(payLaterMessage);
-                let payLaterButton = addButton("payLaterButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Pagar Luego");
+                let payLaterButton = addButton("payLaterButtonId", "btn-full btn btn-primary col-12 col-sm-12 m-bottom-half-xs", "Pagar Luego");
 
 
-                let payTransferMessage = "Si quieres pagar con transferencia bancaria, puedes solicitar los datos para la transfgerencia aquí:"
+                let payTransferMessage = "Si quieres pagar con transferencia bancaria, puedes solicitar los datos para la transferencia aqu\u00ed:"
                 let payTransferMessageElement = paymentText(payTransferMessage);
-                let payTransferButton = addButton("payTransferButtonId", "btn-full btn btn-primary col-12 col-sm-6 m-bottom-half-xs", "Solicitar datos para transferencia");
+                let payTransferButton = addButton("payTransferButtonId", "btn-full btn btn-primary col-12 col-sm-12 m-bottom-half-xs", "Pagar con transferencia");
 
-                let backButton = addButton("backButtonId", "btn-full btn btn-secondary col-12 col-sm-6 m-bottom-half-xs", "Volver");
-
-                /*
-                let whatsAppLink = addCustomElement("a", "whatsAppLinkId", "");
-                whatsAppLink.href = href="https://api.whatsapp.com/send?phone=59899203412";
-
-                let whatsappIcon = addCustomElement("svg", "whatsappIconId", "icon-inline icon-3x svg-icon-text");
-                whatsappIcon.appendChild(whatsAppLink);
-                */
+                let backButton = addButton("backButtonId", "btn-full btn btn-secondary col-12 col-sm-12 m-bottom-half-xs", "Volver");
 
                 
                 let statusDiv = document.getElementsByClassName("status-content")[0];
@@ -173,6 +168,7 @@
                 statusDiv.appendChild(payTransferMessageElement);
                 statusDiv.appendChild(payTransferButton);
 
+                statusDiv.appendChild(addCustomElement("p", "customP1", ""));
                 statusDiv.appendChild(backButton);
             }
             
@@ -182,38 +178,43 @@
                 let orderTotal = LS.order.total / 100;
                 let orderNumber = LS.order.number;
                 let contactEmail = LS.cart.contact.email;
+                let order_url = window.location.origin + window.location.pathname;
+                
+
                 console.log("total; " + orderTotal);
                 console.log("orderNumber; " + orderTotal);
                 console.log("contactEmail; " + orderTotal);
 
-                /*
+                
                 $.ajax({
-                    url:"https://8gvb7vktrc.execute-api.us-east-2.amazonaws.com/test/helloworld",
+                    url:"https://7adkgao0rl.execute-api.sa-east-1.amazonaws.com/default/mercadoPagopayment",
                     type:"POST",
                     headers: { 
                     "Content-Type" : "application/json",
-                    "id" : "1616",
-                    "number" : "20200120",
-                    "total" : "16"
-                    },
+                    "number" : orderNumber,
+                    "total" : orderTotal,
+                    "order_url" : order_url,
+                    "email" : contactEmail
+                },
                     success: function(data) {
                         console.log(data);
+                        window.location.href = data.url;
                     },
                     error: function(data) {
                         console.log("error al cargar medio de pago");
+                        console.log(data);
+
                     }
                 })
-                */
                 
-                //var origin   = window.location.href;
-                //var successUrl = origin + "?payment=success";
                 
-                var origin   = window.location.origin;
-                var pathname = window.location.pathname;
-                var successUrl = origin + pathname + "?payment=success";
+                
+                
 
-
-                window.location.href = successUrl;
+                //var origin   = window.location.origin;
+                //var pathname = window.location.pathname;
+                //var successUrl = origin + pathname + "?payment=success";
+                //window.location.href = successUrl;
             });
             
             $("#payOtherButtonId").click(function(){
@@ -226,6 +227,16 @@
 
             $("#backButtonId").click(function(){
                 window.location.href = window.location.origin + window.location.pathname;
+            });
+
+            $("#payTransferButtonId").click(function(){
+                let orderNumber = LS.order.number;
+                let text = "Mi n\u00famero de compra es la " + orderNumber + ". Quiero los datos para realizar transferencia."
+                let encodedText = encodeURIComponent(text);
+                let whatsAppLink = "https://wa.me/59899203412?text=" + encodedText;
+
+                window.open(whatsAppLink, "_blank");
+                window.location.href = window.location.origin + window.location.pathname + "?payment=later";
             });
 
         };
